@@ -1,55 +1,105 @@
-//LED'lerin bağlı olduğu pinler tanımlanır. 
-#define LED1 7
-#define LED2 6
-#define LED3 5 
+#include "DHT.h"
 
-//değişken tanımlamaları yapılır.
-float value1;
-float value2;
-float temperature;
-int motor=11;
+#define DHTPIN 2
 
+#define DHTTYPE DHT11
+//#define DHTTYPE DHT22
+//#define DHTTYPE DHT21
 
-void setup()
-{
-  Serial.begin(9600);
-  // pinMode(motor,OUTPUT);   // Fan pini çıkış olarak tanımlanır.
-  
-  // pinMode(7,OUTPUT);  // 7,6 ve 5'de LED'ler bağlıdır. Çıkış olarak tanımlanırlar.
-  // pinMode(6,OUTPUT);
-  // pinMode(5,OUTPUT);
+DHT temelyigitsari(DHTPIN, DHTTYPE);
+
+int kirmiziPin = 9;
+int yesilPin = 10;
+int maviPin = 11;
+int kirmizi_motor=3;
+int mavi_motor=5;
+
+void setup() {
+
+pinMode(kirmiziPin, OUTPUT); 
+pinMode(yesilPin, OUTPUT); 
+pinMode(maviPin, OUTPUT);  
+pinMode(kirmizi_motor, OUTPUT);
+pinMode(mavi_motor, OUTPUT);
+
+Serial.begin(9600);
+Serial.println("DHT11 test!");
+
+temelyigitsari.begin();
 }
-void loop()
-{
-  value1=analogRead(4);   // Sıcaklık sensörü okunur.
-  value2= (value1/1023)*500;
-  temperature=value2;       // Okunan sıcaklık bilgisine göre sıcaklık santigrat cinsinden hesaplanır.
+
+void loop() {
+
+  delay(2500);
+
+  int h = temelyigitsari.readHumidity();
+
+  int t = temelyigitsari.readTemperature();
+
+  Serial.print("Nem: ");
+  Serial.print(h);
+  Serial.println(" %");
+  Serial.print("Temperature: ");
+  Serial.print(t);
+  Serial.println(" ^C ");
+  
   
 
-  Serial.print("Sicaklik : ");
-  Serial.print(temperature);
-  Serial.println(" ^C");
-  Serial.print("lm35pin : ");
-  Serial.print(value1);
-  Serial.println(" ^C");
+if (t>=20 and t<30)    
+  {
+   analogWrite(kirmiziPin,0);  // KIRMIZI RENK 
+   analogWrite(yesilPin,255);
+   analogWrite(maviPin,255);
+   
+   analogWrite(kirmizi_motor,165);
+   analogWrite(mavi_motor,0);
 
-   // if (isi>15)    
-  {
-    digitalWrite(LED1,HIGH);
-    analogWrite(motor,75);
+   Serial.print("Speed: ");
+   Serial.println(" 500 RPM || KIRMIZI FAN YARI GÜÇTE");
+    
   }
-  // else if (isi>25)     
+   if (t>=30 and t<40)     
   {
-    digitalWrite(LED2,HIGH);
-    analogWrite(motor,150);
+   analogWrite(kirmiziPin,255);  // YEŞİL RENK
+   analogWrite(yesilPin,0);
+   analogWrite(maviPin,255);
+
+   analogWrite(kirmizi_motor,255);
+   analogWrite(mavi_motor,0);
+
+   Serial.print("Speed: ");
+   Serial.println(" 1000 RPM || KIRMIZI FAN TAM GÜÇTE");
+            
   }
-    // else if (isi>35)   
+    if (t>=40 and t<50)   
   {
-    digitalWrite(LED3,HIGH);
-    analogWrite(motor,255);
+   analogWrite(kirmiziPin,255);  // MAVİ RENK 
+   analogWrite(yesilPin,255);
+   analogWrite(maviPin,0);
+
+   analogWrite(kirmizi_motor,0);
+   analogWrite(mavi_motor,165);
+
+   Serial.print("Speed: ");
+   Serial.println(" 500 RPM || MAVİ FAN YARI GÜÇTE");
+          
   }
-    // else {
-      analogWrite(motor,0); 
   
-    delay(500);
+  if (t>=50 and t<=60)   
+  {
+   analogWrite(kirmiziPin,0);  // BEYAZ RENK
+   analogWrite(yesilPin,0);
+   analogWrite(maviPin,0);
+
+   analogWrite(kirmizi_motor,0);
+   analogWrite(mavi_motor,255);
+
+   Serial.print("Speed: ");
+   Serial.println(" 1000 RPM || MAVİ FAN TAM GÜÇTE");
+        
+  }
+  
+  Serial.println("-------------------");
+     
+
 }
