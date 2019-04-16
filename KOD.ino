@@ -1,6 +1,6 @@
 #include "DHT.h"                                // DHT KÜTÜPHANESİ EKLENİR.
 
-#define DHTPIN 2                                // DHT'NİN BAĞLI OLDUĞU PİN TANIMLANIR.
+#define DHTPIN 7                                // DHT'NİN BAĞLI OLDUĞU PİN TANIMLANIR.
 
 #define DHTTYPE DHT11                           //DHT SERİSİNİN HANGİ ÜRÜNÜ KULLANILDIĞI BELİRTİLİR.
 
